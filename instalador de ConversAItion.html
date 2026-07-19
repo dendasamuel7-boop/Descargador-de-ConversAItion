@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConversAItion | CrAIthon</title>
+<meta name="description" content="ConversAItion, la IA de escritorio de CrAIthon. Descárgala para Windows.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #060607;
+    --bg-soft: #0c0c0e;
+    --surface: #131316;
+    --surface-2: #1a1a1e;
+    --border: #232327;
+    --text: #f5f5f7;
+    --text-muted: #9a9aa2;
+    --text-faint: #55555d;
+    --blue: #7ec8e8;
+    --green: #93d67e;
+    --orange: #ff9b4d;
+    --violet: #a37bff;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a{ color: inherit; }
+  :focus-visible{ outline: 2px solid var(--blue); outline-offset: 3px; }
+
+  .wrap{
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- NAV ---------- */
+  nav.topbar{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(6,6,7,0.75);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 18px 28px;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family: var(--display);
+    font-weight:600;
+    font-size:1.05rem;
+    letter-spacing: -0.02em;
+  }
+  .brand-dot{
+    width:8px; height:8px; border-radius:50%;
+    background: linear-gradient(135deg, var(--blue), var(--violet));
+  }
+  .nav-links{ display:flex; gap:32px; font-size:0.92rem; color:var(--text-muted); }
+  .nav-links a{ text-decoration:none; transition: color .15s ease; }
+  .nav-links a:hover{ color: var(--text); }
+  @media (max-width: 640px){ .nav-links{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding: 100px 0 70px;
+    position: relative;
+  }
+  .hero-inner{
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px;
+    align-items: center;
+  }
+  @media (max-width: 900px){
+    .hero-inner{ grid-template-columns: 1fr; }
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+  .eyebrow .pulse{
+    width:6px; height:6px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(147,214,126,0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(147,214,126,0.5); }
+    70%{ box-shadow: 0 0 0 7px rgba(147,214,126,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(147,214,126,0); }
+  }
+
+  .wordmark{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin-bottom: 22px;
+  }
+  .wordmark span{
+    display:inline-block;
+    opacity: 0;
+    transform: translateY(14px);
+    animation: rise .6s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .wordmark .w-con{ color: var(--blue); animation-delay: .05s; }
+  .wordmark .w-vers{ color: var(--green); animation-delay: .16s; }
+  .wordmark .w-ai{
+    background: linear-gradient(120deg, var(--orange), #ffd280);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color: transparent;
+    animation-delay: .27s;
+  }
+  .wordmark .w-tion{ color: var(--violet); animation-delay: .38s; }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+
+  .hero p.lede{
+    font-size: 1.08rem;
+    color: var(--text-muted);
+    max-width: 46ch;
+    margin-bottom: 36px;
+  }
+
+  .cta-row{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-bottom: 14px; }
+
+  .btn-download{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background: var(--text);
+    color: #0a0a0b;
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 0.98rem;
+    padding: 14px 22px;
+    border-radius: 12px;
+    text-decoration:none;
+    border: 1px solid transparent;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-download:hover{ transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,255,255,0.12); }
+  .btn-download svg{ width:18px; height:18px; }
+
+  .btn-secondary{
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+  }
+  .btn-secondary:hover{ color: var(--text); border-color: var(--text-faint); }
+
+  .meta-row{
+    display:flex; gap:18px; flex-wrap:wrap;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    margin-top: 18px;
+  }
+  .meta-row span{ display:flex; align-items:center; gap:6px; }
+  .meta-row .sep{ color: var(--border); }
+
+  /* ---------- CHAT DEMO (signature element) ---------- */
+  .demo-frame{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow:hidden;
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7);
+  }
+  .demo-titlebar{
+    display:flex; align-items:center; gap:8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .demo-dot{ width:9px; height:9px; border-radius:50%; background: #3a3a40; }
+  .demo-titlebar span{
+    margin-left: 8px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-faint);
+  }
+  .demo-body{
+    height: 340px;
+    padding: 22px 20px;
+    display:flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: hidden;
+  }
+  .demo-msg{
+    max-width: 78%;
+    padding: 11px 16px;
+    border-radius: 16px;
+    font-size: 0.92rem;
+    opacity:0;
+    animation: msgIn .35s ease forwards;
+  }
+  @keyframes msgIn{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform:none; } }
+  .demo-msg.user{
+    align-self:flex-end;
+    background: var(--text);
+    color:#0a0a0b;
+    font-weight:500;
+    border-bottom-right-radius: 4px;
+  }
+  .demo-msg.bot{
+    align-self:flex-start;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: #dcdce0;
+    border-bottom-left-radius: 4px;
+  }
+  .typing-dots{
+    align-self:flex-start;
+    display:flex; gap:5px;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    border-bottom-left-radius:4px;
+  }
+  .typing-dots i{
+    width:6px; height:6px; border-radius:50%;
+    background: var(--text-faint);
+    animation: bounce 1.1s infinite ease-in-out;
+  }
+  .typing-dots i:nth-child(2){ animation-delay: .15s; }
+  .typing-dots i:nth-child(3){ animation-delay: .3s; }
+  @keyframes bounce{ 0%,60%,100%{ transform: translateY(0); opacity:.5;} 30%{ transform: translateY(-4px); opacity:1; } }
+
+  @media (prefers-reduced-motion: reduce){
+    .wordmark span{ animation: none; opacity:1; transform:none; }
+    .demo-msg{ animation: none; opacity:1; }
+    .typing-dots i{ animation:none; }
+    .eyebrow .pulse{ animation:none; }
+  }
+
+  /* ---------- FEATURES ---------- */
+  .section{ padding: 78px 0; border-top: 1px solid var(--border); }
+  .section-head{ margin-bottom: 46px; max-width: 60ch; }
+  .section-label{
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+    display:block;
+  }
+  .section-head h2{
+    font-family: var(--display);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .feature-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow:hidden;
+  }
+  @media (max-width: 780px){ .feature-grid{ grid-template-columns: 1fr; } }
+
+  .feature{
+    background: var(--bg-soft);
+    padding: 32px 28px;
+  }
+  .feature .icon{
+    width:38px; height:38px;
+    border-radius: 10px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom: 20px;
+    font-size: 1.15rem;
+  }
+  .feature:nth-child(1) .icon{ background: rgba(126,200,232,0.12); color: var(--blue); }
+  .feature:nth-child(2) .icon{ background: rgba(147,214,126,0.12); color: var(--green); }
+  .feature:nth-child(3) .icon{ background: rgba(163,123,255,0.12); color: var(--violet); }
+
+  .feature h3{
+    font-family: var(--display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .feature p{ color: var(--text-muted); font-size: 0.92rem; }
+
+  /* ---------- INSTALL STEPS ---------- */
+  .steps{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    counter-reset: step;
+  }
+  @media (max-width: 780px){ .steps{ grid-template-columns: 1fr; } }
+
+  .step{ position:relative; padding-left: 6px; }
+  .step .num{
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--text-faint);
+    display:block;
+    margin-bottom: 14px;
+  }
+  .step h3{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.08rem;
+    margin-bottom: 10px;
+  }
+  .step p{ color: var(--text-muted); font-size: 0.92rem; }
+  .step:not(:last-child)::after{
+    content:'';
+    position:absolute;
+    top: 8px; right: -14px;
+    width: 8px; height:1px;
+    background: var(--border);
+  }
+  @media (max-width: 780px){ .step:not(:last-child)::after{ display:none; } }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 40px 0 50px;
+  }
+  .footer-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap: 16px;
+  }
+  .footer-inner p{
+    font-size: 0.85rem;
+    color: var(--text-faint);
+  }
+  .footer-links{ display:flex; gap:22px; font-size:0.85rem; color: var(--text-muted); }
+  .footer-links a{ text-decoration:none; }
+  .footer-links a:hover{ color: var(--text); }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-dot"></span>CrAIthon</div>
+    <div class="nav-links">
+      <a href="#demo">Demo</a>
+      <a href="#funciones">Funciones</a>
+      <a href="#instalar">Instalación</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <div class="eyebrow"><span class="pulse"></span>VERSIÓN 0.2 · BETA</div>
+      <h1 class="wordmark">
+        <span class="w-con">Con</span><span class="w-vers">vers</span><span class="w-ai">AI</span><span class="w-tion">tion</span>
+      </h1>
+      <p class="lede">Tu asistente de escritorio hecho por CrAIthon. Cuenta chistes, resuelve matemáticas y recuerda lo que le cuentas — todo instalado en tu ordenador, sin pestañas de navegador de por medio.</p>
+
+      <div class="cta-row">
+        <a class="btn-download" href="ConversAItion_Setup.exe" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Descargar para Windows
+        </a>
+        <a class="btn-secondary" href="#demo">Ver la demo primero</a>
+      </div>
+
+      <div class="meta-row">
+        <span>Windows 10 / 11</span>
+        <span class="sep">·</span>
+        <span>Instalador .exe</span>
+        <span class="sep">·</span>
+        <span>Gratis</span>
+      </div>
+    </div>
+
+    <div class="demo-frame" id="demo">
+      <div class="demo-titlebar">
+        <span class="demo-dot"></span><span class="demo-dot"></span><span class="demo-dot"></span>
+        <span>ConversAItion.exe</span>
+      </div>
+      <div class="demo-body" id="demoBody"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="funciones">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-label">FUNCIONES</span>
+      <h2>Lo que ya sabe hacer, aunque sea BETA</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="icon">🧮</div>
+        <h3>Matemáticas al vuelo</h3>
+        <p>Escríbele una cuenta en lenguaje normal y te devuelve el resultado, sin necesidad de calculadora.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📚</div>
+        <h3>Conectada a Wikipedia</h3>
+        <p>Si le preguntas por algo que no sabe de memoria, busca un resumen breve y directo al grano.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🧠</div>
+        <h3>Memoria local</h3>
+        <p>Recuerda tu nombre y lo que le cuentas entre conversaciones. Puedes borrarlo cuando quieras, con un solo mensaje.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="instalar">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-label">INSTALACIÓN</span>
+      <h2>De la descarga al primer chiste, en tres pasos</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="num">01</span>
+        <h3>Descarga el instalador</h3>
+        <p>Pulsa el botón de arriba. Se descarga un único archivo, ConversAItion_Setup.exe.</p>
+      </div>
+      <div class="step">
+        <span class="num">02</span>
+        <h3>Ejecuta el asistente</h3>
+        <p>Acepta la licencia, elige dónde instalarla y marca si quieres un acceso directo en el escritorio.</p>
+      </div>
+      <div class="step">
+        <span class="num">03</span>
+        <h3>Empieza a chatear</h3>
+        <p>Se abre sola al terminar. A partir de ahí, la tienes siempre lista desde el escritorio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <p>© 2026 CrAIthon — Daniel, Martín y Samuel.</p>
+    <div class="footer-links">
+      <a href="#demo">Demo</a>
+      <a href="#instalar">Instalación</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var body = document.getElementById('demoBody');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var script = [
+    { role:'user', text:'chiste' },
+    { role:'bot',  text:'¿Qué le dice un imán a otro imán? ¡Me atraes!' },
+    { role:'user', text:'cuanto es 12 por 8' },
+    { role:'bot',  text:'El resultado es: 96' },
+    { role:'user', text:'me llamo Alicia' },
+    { role:'bot',  text:'¡Encantado, Alicia! ¿De qué hablamos hoy?' }
+  ];
+
+  function addMsg(role, text){
+    var div = document.createElement('div');
+    div.className = 'demo-msg ' + role;
+    div.textContent = text;
+    if(reduced) div.style.opacity = 1;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function addTyping(){
+    var t = document.createElement('div');
+    t.className = 'typing-dots';
+    t.id = 'typingNow';
+    t.innerHTML = '<i></i><i></i><i></i>';
+    body.appendChild(t);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function removeTyping(){
+    var t = document.getElementById('typingNow');
+    if(t) t.remove();
+  }
+
+  function trim(){
+    while(body.children.length > 5){
+      body.removeChild(body.firstChild);
+    }
+  }
+
+  var i = 0;
+  function step(){
+    if(i >= script.length){ i = 0; body.innerHTML=''; }
+    var item = script[i];
+    if(item.role === 'bot'){
+      addTyping();
+      setTimeout(function(){
+        removeTyping();
+        addMsg('bot', item.text);
+        trim();
+        i++;
+        setTimeout(step, 1400);
+      }, reduced ? 50 : 900);
+    } else {
+      addMsg('user', item.text);
+      trim();
+      i++;
+      setTimeout(step, reduced ? 50 : 700);
+    }
+  }
+  step();
+})();
+</script>
+
+</body>
+</html>
